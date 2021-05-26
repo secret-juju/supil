@@ -2,7 +2,7 @@ from keras_bert import load_trained_model_from_checkpoint
 from bert import get_bert_finetuning_model, inherit_Tokenizer
 from eval import eval_ratio
 from extract import extract_data
-from db import call_content, insert_company, insert_industry, insert_positivity, insert_company_industry_id
+from db import *
 import codecs
 
 SEQ_LEN = 128
@@ -10,9 +10,9 @@ BATCH_SIZE = 16
 EPOCHS=2
 LR=1e-5
 
-config_path = 'C:/Users/user/ipynb/model/bert/bert_config.json'
-checkpoint_path = 'C:/Users/user/ipynb/model/bert/bert_model.ckpt'
-vocab_path = 'C:/Users/user/ipynb/model/bert/vocab.txt'
+config_path = 'model/bert/bert_config.json'
+checkpoint_path = 'model/bert/bert_model.ckpt'
+vocab_path = 'model/bert/vocab.txt'
 
 DATA_COLUMN = "document"
 LABEL_COLUMN = "label"
@@ -37,20 +37,18 @@ model = load_trained_model_from_checkpoint(
     seq_len=SEQ_LEN,)
 
 bert_model = get_bert_finetuning_model(model)
-bert_model.load_weights('C:/Users/user/ipynb/model/bert.h5')
+bert_model.load_weights('model/bert.h5')
 
 contents = call_content()
 
 for content in contents:
-    df = extract_data(content[0])
-    ratio = eval_ratio(content[0], bert_model, tokenizer)
+    df = extract_data(content[1])
+    ratio = eval_ratio(content[1], bert_model, tokenizer)
+    delete_org_content(content[0])
 
     for idx, data in df.iterrows():
         print(data['단축코드'], data['한글 종목약명'], data['업종'])
         insert_company(data['단축코드'], data['한글 종목약명'])
-        insert_positivity(ratio, content[0], data['단축코드'])
+        insert_positivity(ratio, content[1], data['단축코드'])
         insert_industry(data['업종'])
         insert_company_industry_id(data['단축코드'], data['업종'])
-
-##
-print(df)

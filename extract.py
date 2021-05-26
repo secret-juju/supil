@@ -3,7 +3,7 @@ import pandas as pd
 
 def extract_data(contents):
     okt = Okt()
-    df = pd.read_csv('C:/Users/user/ipynb/data/company_name.csv', index_col=0)
+    df = pd.read_csv('company_name.csv', index_col=0)
 
     li =  okt.phrases(contents)
     company = list(set(li)&set(df['한글 종목약명']))

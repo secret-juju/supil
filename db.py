@@ -1,24 +1,29 @@
 import pymysql
 
+pw = ''
 def call_content():
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = '',
+        passwd = pw,
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
     )
-    cursor = secretjuju_db.cursor()
+    try:
+        with secretjuju_db.cursor() as cursor:
+            sql = """SELECT id, content FROM news WHERE company_id is NULL
+                 """
+            cursor.execute(sql)
+            content = cursor.fetchall()
 
-    cursor.execute("SELECT content FROM news")
-    content = cursor.fetchall()
-
-    return content
+            return content
+    finally:
+        secretjuju_db.close()
 
 def insert_industry(industry):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = '',
+        passwd = pw,
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -37,7 +42,7 @@ def insert_industry(industry):
 def insert_company(code, name):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = '',
+        passwd = pw,
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -45,14 +50,9 @@ def insert_company(code, name):
 
     try:
         with secretjuju_db.cursor() as cursor:
-            #             sql = """INSERT INTO company (ticker_symbol, name)
-            #                      VALUES (%s, %s)
-            #                      WHERE NOT EXISTS(SELECT ticker_symbol, name FROM company WHERE ticker_symbol = %s AND company = %s)
-            #                      """
-
             sql = """INSERT IGNORE INTO company (ticker_symbol, name)
                     VALUES (%s, %s)
-            """
+                    """
             cursor.execute(sql, (code, name))
         secretjuju_db.commit()
 
@@ -62,7 +62,7 @@ def insert_company(code, name):
 def insert_positivity(ratio, contents, company_id):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = '',
+        passwd = pw,
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -85,7 +85,7 @@ def insert_positivity(ratio, contents, company_id):
 def insert_companyid(code):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = '',
+        passwd = pw,
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -109,7 +109,7 @@ def insert_companyid(code):
 def insert_company_industry_id(company_id, industry):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = '',
+        passwd = pw,
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -117,13 +117,30 @@ def insert_company_industry_id(company_id, industry):
 
     try:
         with secretjuju_db.cursor() as cursor:
-            #             sql = """update news
-            #                     SET positivity = %s WHERE content = %s
-            #                 """
-            sql = """insert into company_industry_affiliation (company_id, industry_id)
+            sql = """insert ignore into company_industry_affiliation (company_id, industry_id)
                         values((SELECT id FROM company WHERE ticker_symbol = %s), (SELECT id FROM industry WHERE name = %s))
             """
             cursor.execute(sql, (company_id, industry))
+        secretjuju_db.commit()
+
+    finally:
+        secretjuju_db.close()
+
+def delete_org_content(idx):
+    secretjuju_db = pymysql.connect(
+        user='root',
+        passwd = pw,
+        host = 'database.dsm-cms.com',
+        db='secret_juju',
+        charset='utf8'
+    )
+
+    try:
+        with secretjuju_db.cursor() as cursor:
+            sql = """DELETE FROM news
+                        WHERE id = %s
+                """
+            cursor.execute(sql, (idx))
         secretjuju_db.commit()
 
     finally:
