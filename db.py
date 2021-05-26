@@ -3,7 +3,7 @@ import pymysql
 def call_content():
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = 'Fvf.qy)gGmbEa3</',
+        passwd = '',
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -18,7 +18,7 @@ def call_content():
 def insert_industry(industry):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = 'Fvf.qy)gGmbEa3</',
+        passwd = '',
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -37,7 +37,7 @@ def insert_industry(industry):
 def insert_company(code, name):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = 'Fvf.qy)gGmbEa3</',
+        passwd = '',
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -62,7 +62,7 @@ def insert_company(code, name):
 def insert_positivity(ratio, contents, company_id):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = 'Fvf.qy)gGmbEa3</',
+        passwd = '',
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -85,7 +85,7 @@ def insert_positivity(ratio, contents, company_id):
 def insert_companyid(code):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = 'Fvf.qy)gGmbEa3</',
+        passwd = '',
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
@@ -109,7 +109,7 @@ def insert_companyid(code):
 def insert_company_industry_id(company_id, industry):
     secretjuju_db = pymysql.connect(
         user='root',
-        passwd = 'Fvf.qy)gGmbEa3</',
+        passwd = '',
         host = 'database.dsm-cms.com',
         db='secret_juju',
         charset='utf8'
